@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NodeJs OKLM POSEY</title>
+</head>
+<body>
+<h1>Hello World</h1>
+
+<input type="text" id="textfield">    
+</input>
+<button id="send">Envoyer</button>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+    var socket = io();
+    $('#send').on('click', function(choice){
+        socket.emit('choice', $('#textfield').val());
+    });
+    socket.on('choices',function(what){
+        
+    });
+</script>
+</html>

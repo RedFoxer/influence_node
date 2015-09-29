@@ -1,26 +1,74 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>NodeJs OKLM POSEY</title>
+    <meta charset="utf-8">
+    <title>music</title>
+    <style media="screen">
+        .choice {
+            float: left;
+            margin: 30px;
+        }
+        img {
+            cursor: pointer;
+            width: 300px;
+            height: 300px;
+        }
+        img:hover {
+            border: 2px solid purple;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-<h1>Hello World Mother****</h1>
+<h1>What is your favorite music ?</h1>
 
-<input type="text" id="textfield">    
-</input>
-<button id="send">Envoyer</button>
-</body>
+<div class="choice left">
+    <img>
+    <div class="caption"></div>
+    <div class="total"></div>
+</div>
+<div class="choice right">
+    <img>
+    <div class="caption"></div>
+    <div class="total"></div>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script>
     var socket = io();
-    $('#send').on('click', function(choice){
-        socket.emit('choice', $('#textfield').val());
+    $(function () {
+        // detect mouse overs
+        $('.choice').on('mouseover', function () {
+            var what = 'left';
+            if($(this).hasClass('right')) {
+                what = 'right';
+            }
+            // tell the server
+            socket.emit('choice', what);
+        });
+        $('.choice').on('mouseout', function () {
+            var what = 'left';
+            if($(this).hasClass('right')) {
+                what = 'right';
+            }
+            // tell the server
+            socket.emit('unchoice', what);
+        });
     });
-    socket.on('choices',function(what){
-        
+
+    // update total
+    socket.on('total', function (votes) {
+        $(".left .total").html(votes.left.total);
+        $(".right .total").html(votes.right.total);
+    });
+    // update the whole vote
+    socket.on('votes', function (votes) {
+        $(".left img").prop('src', votes.left.src);
+        $(".left .caption").html(votes.left.name);
+        $(".right img").prop('src', votes.right.src);
+        $(".right .caption").html(votes.right.name);
     });
 </script>
+
+</body>
 </html>
